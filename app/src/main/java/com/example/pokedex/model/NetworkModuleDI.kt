@@ -1,4 +1,4 @@
-package com.example.pokedex
+package com.example.pokedex.model
 
 import com.example.pokedex.Constants.BASE_URL
 import okhttp3.OkHttpClient

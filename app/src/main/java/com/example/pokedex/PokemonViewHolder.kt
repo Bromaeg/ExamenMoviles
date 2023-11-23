@@ -10,6 +10,8 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.pokedex.databinding.ItemPokemonBinding
+import com.example.pokedex.model.PokemonBase
+import com.example.pokedex.model.PokemonRepository
 import com.example.pokedex.pokemon.Pokemon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

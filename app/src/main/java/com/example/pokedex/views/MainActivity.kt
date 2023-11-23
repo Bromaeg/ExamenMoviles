@@ -1,5 +1,4 @@
-package com.example.pokedex
-import android.app.Activity
+package com.example.pokedex.views
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +8,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.appcompat.app.AppCompatActivity
+import com.example.pokedex.Constants
+import com.example.pokedex.model.PokedexObject
+import com.example.pokedex.model.PokemonBase
+import com.example.pokedex.model.PokemonRepository
 
 
 class MainActivity: AppCompatActivity() {
@@ -43,7 +46,7 @@ class MainActivity: AppCompatActivity() {
     private fun getPokemonList(){
         CoroutineScope(Dispatchers.IO).launch {
             val pokemonRepository = PokemonRepository()
-            val result:PokedexObject? = pokemonRepository.getPokemonList(Constants.MAX_POKEMON_NUMBER)
+            val result: PokedexObject? = pokemonRepository.getPokemonList(Constants.MAX_POKEMON_NUMBER)
             Log.d("Salida", result?.count.toString())
             CoroutineScope(Dispatchers.Main).launch {
                 setUpRecyclerView(result?.results!!)

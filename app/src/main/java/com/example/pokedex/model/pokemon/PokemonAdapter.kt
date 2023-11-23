@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pokedex.PokemonBase
+import com.example.pokedex.model.PokemonBase
 import com.example.pokedex.PokemonViewHolder
 import com.example.pokedex.databinding.ItemPokemonBinding
 

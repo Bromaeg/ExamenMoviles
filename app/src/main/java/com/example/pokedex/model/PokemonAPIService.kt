@@ -1,5 +1,6 @@
-package com.example.pokedex
+package com.example.pokedex.model
 
+import com.example.pokedex.model.PokedexObject
 import com.example.pokedex.pokemon.Pokemon
 import retrofit2.http.GET
 import retrofit2.http.Path
