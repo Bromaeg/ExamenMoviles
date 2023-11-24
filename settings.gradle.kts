@@ -13,5 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Pokedex"
+rootProject.name = "Covid19"
 include(":app")
+ 
