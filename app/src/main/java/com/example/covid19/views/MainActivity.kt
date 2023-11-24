@@ -5,6 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -18,9 +22,12 @@ import com.example.covid19.model.Covid19Object
 import androidx.compose.material.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.unit.dp
 import com.example.covid19.model.ApiClient
 import com.example.covid19.model.Covid19Repository
 import com.example.covid19.model.Covid19ViewModelFactory
+import com.example.covid19.model.CovidCase
+import com.google.gson.annotations.SerializedName
 
 
 class MainActivity : ComponentActivity() {
@@ -76,8 +83,9 @@ fun ErrorView(message: String?) {
 
 @Composable
 fun CovidDataList(data: List<Covid19Object>) {
-    Column {
-        data.forEach { covidData ->
+    // Usa LazyColumn para manejar listas grandes eficientemente
+    LazyColumn {
+        items(data) { covidData ->
             CovidDataItem(covidData)
         }
     }
@@ -85,6 +93,16 @@ fun CovidDataList(data: List<Covid19Object>) {
 
 @Composable
 fun CovidDataItem(covidData: Covid19Object) {
-    Text(text = "Country: ${covidData.country}")
-    Text(text = "Region: ${covidData.region ?: "Not specified"}")
+    // Usa Card para cada elemento para un mejor aspecto visual
+    Card(modifier = Modifier.padding(8.dp), elevation = 4.dp) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Country: ${covidData.country}")
+            Text(text = "Region: ${covidData.region ?: "Not specified"}")
+            Text(text = "Cases_ ${covidData.cases}")
+            Text(text = "Total Cases_ ${covidData.totalCases}")
+            Text(text = "Date: ${covidData.date}")
+
+        }
+    }
 }
+
