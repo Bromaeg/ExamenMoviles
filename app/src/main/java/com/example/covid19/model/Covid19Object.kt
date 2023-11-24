@@ -11,11 +11,16 @@ data class CovidCase(
 data class Covid19Object(
     @SerializedName("country") val country: String,
     @SerializedName("region") val region: String?,
-    @SerializedName("cases") val cases: Map<String, CovidCase>,
-    @SerializedName("totalCases") val totalCases: String,
-    @SerializedName("date") val date: String
-
+    @SerializedName("cases") val cases: Map<String, CovidCase>
 )
-{
 
-}
+data class CovidCaseObject(
+    val country: String,
+    val region: String?,
+    val date: String,
+    val totalCases: Int,
+    val newCases: Int
+)
+
+
+
