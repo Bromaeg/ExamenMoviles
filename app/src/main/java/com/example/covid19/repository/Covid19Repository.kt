@@ -1,4 +1,7 @@
-package com.example.covid19.model
+package com.example.covid19.repository
+
+import com.example.covid19.network.ApiService
+import com.example.covid19.model.Covid19Object
 
 
 // Covid19Repository.kt

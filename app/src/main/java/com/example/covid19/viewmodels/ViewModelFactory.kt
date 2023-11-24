@@ -1,8 +1,8 @@
-package com.example.covid19.model
+package com.example.covid19.viewmodels
 
-import Covid19ViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.covid19.repository.Covid19Repository
 
 class Covid19ViewModelFactory(private val repository: Covid19Repository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

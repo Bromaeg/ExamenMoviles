@@ -1,5 +1,5 @@
 package com.example.covid19.views
-import Covid19ViewModel
+import com.example.covid19.viewmodels.Covid19ViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,22 +12,16 @@ import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.covid19.ui.theme.Covid19Theme
 import com.example.covid19.model.Covid19Object
 import androidx.compose.material.Text
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.unit.dp
-import com.example.covid19.model.ApiClient
-import com.example.covid19.model.Covid19Repository
-import com.example.covid19.model.Covid19ViewModelFactory
-import com.example.covid19.model.CovidCase
-import com.google.gson.annotations.SerializedName
+import com.example.covid19.network.ApiClient
+import com.example.covid19.repository.Covid19Repository
+import com.example.covid19.viewmodels.Covid19ViewModelFactory
 
 
 class MainActivity : ComponentActivity() {

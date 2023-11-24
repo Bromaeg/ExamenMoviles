@@ -1,5 +1,6 @@
-package com.example.covid19.model
+package com.example.covid19.network
 
+import com.example.covid19.model.Covid19Object
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Response

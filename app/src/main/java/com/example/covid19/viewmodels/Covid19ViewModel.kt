@@ -1,7 +1,9 @@
+package com.example.covid19.viewmodels
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.covid19.model.Covid19Object
-import com.example.covid19.model.Covid19Repository
+import com.example.covid19.repository.Covid19Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
