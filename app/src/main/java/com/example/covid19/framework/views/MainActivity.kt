@@ -1,9 +1,11 @@
-package com.example.covid19.views
+package com.example.covid19.framework.views
 
-import com.example.covid19.viewmodels.Covid19ViewModel
+import android.os.Build
+import com.example.covid19.framework.viewmodels.Covid19ViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,48 +20,82 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.covid19.model.CovidCaseObject
-import com.example.covid19.network.ApiClient
-import com.example.covid19.repository.Covid19Repository
+import com.example.covid19.data.network.ApiClient
+import com.example.covid19.data.repository.Covid19Repository
 import com.example.covid19.ui.theme.Covid19Theme
-import com.example.covid19.viewmodels.Covid19ViewModelFactory
+import com.example.covid19.framework.viewmodels.Covid19ViewModelFactory
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Covid19Theme {
+                // Initialize the ViewModel with a custom factory.
                 val viewModel: Covid19ViewModel = viewModel(factory = Covid19ViewModelFactory(
                     Covid19Repository(ApiClient.service)
-                ))
-                MainContent(viewModel)
+                )
+                )
+
+                // Observe the ViewModel states.
+                val covidDataState = viewModel.covidData.collectAsState()
+                val isLoadingState = viewModel.isLoading.collectAsState()
+                val errorMessageState = viewModel.errorMessage.collectAsState()
+
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    when {
+                        isLoadingState.value -> {
+                            LoadingView()
+                        }
+                        errorMessageState.value?.isNotEmpty() == true -> {
+                            ErrorView(errorMessageState.value)
+                        }
+                        else -> {
+                            // If there is data, display the quick statistics and list
+                            covidDataState.value?.let { dataList ->
+                                QuickStatistics(dataList) // Make sure this is defined and implemented correctly
+                                CovidDataList(dataList, "Mexico")
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun MainContent(viewModel: Covid19ViewModel) {
-    val countryName = "Mexico" // Assuming you have the country name here
-    val covidDataState = viewModel.covidData.collectAsState()
-    val isLoadingState = viewModel.isLoading.collectAsState()
-    val errorMessageState = viewModel.errorMessage.collectAsState()
+fun QuickStatistics(data: List<CovidCaseObject>) {
+    // Calculate the total and new cases
+    val totalCases = data.sumOf { it.totalCases }
+    val newCases = data.sumOf { it.newCases }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    // Display the statistics in a Card or another Composable
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = 4.dp
     ) {
-        when {
-            isLoadingState.value -> {
-                LoadingView()
-            }
-            errorMessageState.value?.isNotEmpty() == true -> {
-                ErrorView(errorMessageState.value)
-            }
-            else -> {
-                covidDataState.value?.let { dataList ->
-                    CovidDataList(dataList, countryName)
-                }
-            }
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Estadísticas Rápidas",
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                text = "Total de casos: $totalCases",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Casos nuevos: $newCases",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

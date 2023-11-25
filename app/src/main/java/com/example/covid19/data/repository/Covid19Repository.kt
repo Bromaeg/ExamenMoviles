@@ -1,6 +1,6 @@
-package com.example.covid19.repository
+package com.example.covid19.data.repository
 
-import com.example.covid19.network.ApiService
+import com.example.covid19.data.network.ApiService
 import com.example.covid19.model.Covid19Object
 
 

@@ -1,4 +1,4 @@
-package com.example.covid19.network
+package com.example.covid19.data.network
 
 import com.example.covid19.model.Covid19Object
 import retrofit2.Retrofit
