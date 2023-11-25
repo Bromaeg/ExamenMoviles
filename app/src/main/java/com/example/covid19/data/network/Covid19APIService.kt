@@ -21,14 +21,14 @@ interface ApiService {
 
 object ApiClient {
     private const val BASE_URL = "https://api.api-ninjas.com/v1/covid19/"
-    private const val API_KEY = "aQ5yvAPcTc3rz+lpMz2P4g==taw6i4mHSicpgZSP" // Asegúrate de que tu API key sea correcta
+    private const val API_KEY = "aQ5yvAPcTc3rz+lpMz2P4g==taw6i4mHSicpgZSP"
 
-    // Crea el interceptor de logging para ver las solicitudes y respuestas en el log
+    // Crea el interceptor de logging para ver las solicitudes
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY // Cambia a Level.BASIC si quieres menos detalles
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
-    // Crea un cliente de OkHttpClient y añade tus interceptores
+    // Cliente de OkHttpClient
     private val client = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val newRequest = chain.request().newBuilder()
@@ -36,7 +36,7 @@ object ApiClient {
                 .build()
             chain.proceed(newRequest)
         }
-        .addInterceptor(loggingInterceptor) // Añade el logging interceptor aquí
+        .addInterceptor(loggingInterceptor)
         .build()
 
     val retrofit: Retrofit = Retrofit.Builder()

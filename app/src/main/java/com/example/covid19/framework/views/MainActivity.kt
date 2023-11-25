@@ -25,19 +25,19 @@ import com.example.covid19.data.repository.Covid19Repository
 import com.example.covid19.ui.theme.Covid19Theme
 import com.example.covid19.framework.viewmodels.Covid19ViewModelFactory
 
+// La actividad principal de la aplicación.
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Covid19Theme {
-                // Inicia el ViewModel con el factory
+                // Inicializa el ViewModel con un factory personalizado.
                 val viewModel: Covid19ViewModel = viewModel(factory = Covid19ViewModelFactory(
                     Covid19Repository(ApiClient.service)
-                )
-                )
+                ))
 
-                // Devuelve los estados del ViewModel
+                // Observa los estados del ViewModel y actualiza la UI en consecuencia.
                 val covidDataState = viewModel.covidData.collectAsState()
                 val isLoadingState = viewModel.isLoading.collectAsState()
                 val errorMessageState = viewModel.errorMessage.collectAsState()
@@ -46,15 +46,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    // Manejo de los diferentes estados de la aplicacion.
                     when {
                         isLoadingState.value -> {
+                            // Muestra la vista de carga si los datos aun se estan cargando.
                             LoadingView()
                         }
                         errorMessageState.value?.isNotEmpty() == true -> {
+                            // Muestra un mensaje de error si ocurre algun problema.
                             ErrorView(errorMessageState.value)
                         }
                         else -> {
-                            // Si hay datos se despliega las estadisticas
+                            // Si hay datos disponibles, muestra las estadisticas y la lista de datos.
                             covidDataState.value?.let { dataList ->
                                 QuickStatistics(dataList)
                                 CovidDataList(dataList, "Mexico")
@@ -69,11 +72,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun QuickStatistics(data: List<CovidCaseObject>) {
-    // Calcula los casos nuevos y el total
+    // Calcula y muestra estadisticas rapidas sobre los casos de COVID-19.
     val totalCases = data.sumOf { it.totalCases }
     val newCases = data.sumOf { it.newCases }
 
-    // Muestra las estadisticas en una card
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,13 +104,15 @@ fun QuickStatistics(data: List<CovidCaseObject>) {
 
 @Composable
 fun LoadingView() {
+    // Componente para mostrar durante la carga de datos.
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Loading...", style = MaterialTheme.typography.headlineMedium)
+        Text("Cargando...", style = MaterialTheme.typography.headlineMedium)
     }
 }
 
 @Composable
 fun ErrorView(message: String?) {
+    // Componente para mostrar en caso de error al cargar datos.
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text("Error: $message", style = MaterialTheme.typography.headlineMedium)
     }
@@ -116,6 +120,7 @@ fun ErrorView(message: String?) {
 
 @Composable
 fun CovidDataList(data: List<CovidCaseObject>, countryName: String) {
+    // Componente para listar los datos de COVID-19.
     Column {
         Header(countryName)
         LazyColumn {
@@ -128,6 +133,7 @@ fun CovidDataList(data: List<CovidCaseObject>, countryName: String) {
 
 @Composable
 fun Header(countryName: String) {
+    // Encabezado de la lista de datos.
     Surface(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.primaryContainer) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -146,6 +152,7 @@ fun Header(countryName: String) {
 
 @Composable
 fun CovidDataItem(covidData: CovidCaseObject) {
+    // Componente para mostrar un item individual de los datos de COVID-19.
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -166,11 +173,11 @@ fun CovidDataItem(covidData: CovidCaseObject) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "New Cases: ${covidData.newCases}",
+                    text = "Nuevos casos: ${covidData.newCases}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "Total Cases: ${covidData.totalCases}",
+                    text = "Total de casos: ${covidData.totalCases}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
