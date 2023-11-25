@@ -2,12 +2,12 @@ package com.example.covid19.model
 
 import com.google.gson.annotations.SerializedName
 
-
+// Modelo para representar un caso individual
 data class CovidCase(
     @SerializedName("total") val total: Int,
     @SerializedName("new") val new: Int
 )
-
+//Objeto
 data class Covid19Object(
     @SerializedName("country") val country: String,
     @SerializedName("region") val region: String?,
@@ -21,6 +21,3 @@ data class CovidCaseObject(
     val totalCases: Int,
     val newCases: Int
 )
-
-
-
