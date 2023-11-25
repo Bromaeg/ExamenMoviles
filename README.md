@@ -9,7 +9,7 @@ Este proyecto es una aplicación Android desarrollada en Kotlin, la aplicación 
 - Datos presentados en un formato de tarjetas para cada fecha.
 - Estadísticas rápidas que muestran el total y los nuevos casos.
 
-###API 
+### API 
 https://api-ninjas.com/api/covid19
 
 ### Tecnologías Utilizadas
