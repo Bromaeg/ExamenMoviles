@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.covid19.R
 import com.example.covid19.model.CovidCaseObject // Make sure you're using the correct import
 
-class Covid19Adapter(private val dataList: List<CovidCaseObject>) : // Update the type here
+class Covid19Adapter(private val dataList: List<CovidCaseObject>) :
     RecyclerView.Adapter<Covid19Adapter.Covid19ViewHolder>() {
 
     // ViewHolder que contiene las vistas para cada elemento
@@ -32,6 +32,6 @@ class Covid19Adapter(private val dataList: List<CovidCaseObject>) : // Update th
         holder.textViewNewCases.text = currentItem.newCases.toString() // If you have this TextView in your layout
     }
 
-    // Devuelve el tamaño del dataset (invocado por el layout manager)
+    // Devuelve el tamaño del dataset
     override fun getItemCount() = dataList.size
 }

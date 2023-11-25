@@ -31,13 +31,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Covid19Theme {
-                // Initialize the ViewModel with a custom factory.
+                // Inicia el ViewModel con el factory
                 val viewModel: Covid19ViewModel = viewModel(factory = Covid19ViewModelFactory(
                     Covid19Repository(ApiClient.service)
                 )
                 )
 
-                // Observe the ViewModel states.
+                // Devuelve los estados del ViewModel
                 val covidDataState = viewModel.covidData.collectAsState()
                 val isLoadingState = viewModel.isLoading.collectAsState()
                 val errorMessageState = viewModel.errorMessage.collectAsState()
@@ -54,9 +54,9 @@ class MainActivity : ComponentActivity() {
                             ErrorView(errorMessageState.value)
                         }
                         else -> {
-                            // If there is data, display the quick statistics and list
+                            // Si hay datos se despliega las estadisticas
                             covidDataState.value?.let { dataList ->
-                                QuickStatistics(dataList) // Make sure this is defined and implemented correctly
+                                QuickStatistics(dataList)
                                 CovidDataList(dataList, "Mexico")
                             }
                         }
@@ -69,11 +69,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun QuickStatistics(data: List<CovidCaseObject>) {
-    // Calculate the total and new cases
+    // Calcula los casos nuevos y el total
     val totalCases = data.sumOf { it.totalCases }
     val newCases = data.sumOf { it.newCases }
 
-    // Display the statistics in a Card or another Composable
+    // Muestra las estadisticas en una card
     Card(
         modifier = Modifier
             .fillMaxWidth()
