@@ -15,15 +15,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.covid19.model.CovidCaseObject
 import com.example.covid19.data.network.ApiClient
 import com.example.covid19.data.repository.Covid19Repository
 import com.example.covid19.ui.theme.Covid19Theme
 import com.example.covid19.framework.viewmodels.Covid19ViewModelFactory
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.data.LineData
+import androidx.compose.runtime.remember
+
 
 // La actividad principal de la aplicación.
 class MainActivity : ComponentActivity() {
@@ -32,35 +44,31 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Covid19Theme {
-                // Inicializa el ViewModel con un factory personalizado.
+                // ViewModel inicializado aquí con su factory
                 val viewModel: Covid19ViewModel = viewModel(factory = Covid19ViewModelFactory(
                     Covid19Repository(ApiClient.service)
                 ))
 
-                // Observa los estados del ViewModel y actualiza la UI en consecuencia.
-                val covidDataState = viewModel.covidData.collectAsState()
-                val isLoadingState = viewModel.isLoading.collectAsState()
-                val errorMessageState = viewModel.errorMessage.collectAsState()
+                val covidDataState by viewModel.covidData.collectAsState()
+                val isLoadingState by viewModel.isLoading.collectAsState()
+                val errorMessageState by viewModel.errorMessage.collectAsState()
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Manejo de los diferentes estados de la aplicacion.
                     when {
-                        isLoadingState.value -> {
-                            // Muestra la vista de carga si los datos aun se estan cargando.
-                            LoadingView()
-                        }
-                        errorMessageState.value?.isNotEmpty() == true -> {
-                            // Muestra un mensaje de error si ocurre algun problema.
-                            ErrorView(errorMessageState.value)
-                        }
-                        else -> {
-                            // Si hay datos disponibles, muestra las estadisticas y la lista de datos.
-                            covidDataState.value?.let { dataList ->
-                                QuickStatistics(dataList)
-                                CovidDataList(dataList, "Mexico")
+                        isLoadingState -> LoadingView()
+                        errorMessageState?.isNotEmpty() == true -> ErrorView(errorMessageState)
+                        else -> covidDataState?.let { dataList ->
+                            if (dataList.isNotEmpty()) {
+                                Column {
+                                    QuickStatistics(dataList) // Pasamos toda la lista para estadísticas
+                                    CovidChartCard(viewModel) // Tarjeta con la gráfica
+                                    CovidDataList(dataList) // Lista de datos históricos
+                                }
+                            } else {
+                                NoDataView()
                             }
                         }
                     }
@@ -68,6 +76,51 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+
+
+
+@Composable
+fun NoDataView() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("No hay datos disponibles", style = MaterialTheme.typography.headlineMedium)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun CovidChart(viewModel: Covid19ViewModel) {
+    val context = LocalContext.current
+    val chartData = remember { viewModel.getCovidChartData()}
+
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        factory = { ctx ->
+            LineChart(ctx).apply {
+                description.isEnabled = false
+                axisRight.isEnabled = false
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                xAxis.granularity = 1f
+                xAxis.valueFormatter = IndexAxisValueFormatter(viewModel.getDateLabels())
+            }
+        },
+        update = { chart ->
+            val lineDataSet = LineDataSet(chartData, "Total Cases").apply {
+                // Define los colores directamente
+                color = Color(0xFF673AB7).toArgb()
+                valueTextColor = Color(0xFF7B1FA2).toArgb()
+                lineWidth = 2f
+                setDrawValues(false)
+                setDrawCircles(false)
+                setDrawCircleHole(false)
+            }
+            chart.data = LineData(lineDataSet)
+            chart.invalidate()
+        }
+    )
 }
 
 @Composable
@@ -118,11 +171,19 @@ fun ErrorView(message: String?) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CovidDataList(data: List<CovidCaseObject>, countryName: String) {
+fun CovidDataList(data: List<CovidCaseObject>) {
     // Componente para listar los datos de COVID-19.
     Column {
-        Header(countryName)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            elevation = 4.dp
+        ) {
+
+        }
         LazyColumn {
             items(data) { covidData ->
                 CovidDataItem(covidData)
@@ -182,5 +243,18 @@ fun CovidDataItem(covidData: CovidCaseObject) {
                 )
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun CovidChartCard(viewModel: Covid19ViewModel) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = 4.dp
+    ) {
+        CovidChart(viewModel)
     }
 }

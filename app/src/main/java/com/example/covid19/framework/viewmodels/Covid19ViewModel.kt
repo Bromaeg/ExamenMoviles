@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.covid19.model.CovidCaseObject
 import com.example.covid19.data.repository.Covid19Repository
+import com.github.mikephil.charting.data.Entry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +17,10 @@ import java.time.format.DateTimeFormatter
 // ViewModel para manejar la lógica relacionada con los datos de la API.
 @RequiresApi(Build.VERSION_CODES.O)
 class Covid19ViewModel(private val repository: Covid19Repository) : ViewModel() {
+
+    fun getDateLabels(): List<String> {
+        return covidData.value?.map { it.date } ?: emptyList()
+    }
 
     // Estado interno para manejar los datos de COVID.
     private val _covidData = MutableStateFlow<List<CovidCaseObject>?>(null)
@@ -74,5 +79,15 @@ class Covid19ViewModel(private val repository: Covid19Repository) : ViewModel() 
                 _isLoading.value = false
             }
         }
+    }
+
+    // Función para preparar los datos para la gráfica.
+    fun getCovidChartData(): List<Entry> {
+        val entries = ArrayList<Entry>() // Lista para las entradas de la gráfica.
+        _covidData.value?.forEachIndexed { index, covidCaseObject ->
+            val totalCases = covidCaseObject.totalCases.toFloat()
+            entries.add(Entry(index.toFloat(), totalCases)) // Añadir la entrada con el índice y los casos totales.
+        }
+        return entries
     }
 }
