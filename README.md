@@ -8,6 +8,7 @@ Este proyecto es una aplicación Android desarrollada en Kotlin, la aplicación 
 - Visualización de datos históricos de COVID-19 en México.
 - Datos presentados en un formato de tarjetas para cada fecha.
 - Estadísticas rápidas que muestran el total y los nuevos casos.
+- Representacion grafica de los contagios mediante una grafica de tendencia
 
 ### API 
 https://api-ninjas.com/api/covid19
