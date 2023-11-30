@@ -79,6 +79,8 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 
 
 
